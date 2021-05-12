@@ -35,7 +35,6 @@ class Pitch < ApplicationRecord
         return self.images.map {|img| url_for(img)}
     end
 
-
     def self.generate_image(id)
         pitch = Pitch.find_by id: id
         return if pitch.blank? || !pitch.attachment.attached?

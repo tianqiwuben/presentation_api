@@ -22,6 +22,11 @@ gem 'puma', '~> 4.1'
 gem 'jbuilder'
 gem 'rack-cors'
 gem 'mysql2'
+gem 'rmagick'
+gem 'sidekiq'
+gem 'will_paginate'
+gem 'aspose_slides_cloud'
+gem 'rubyzip'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false

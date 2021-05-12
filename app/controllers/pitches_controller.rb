@@ -1,26 +1,43 @@
 class PitchesController < ApplicationController
-  before_action :set_pitch, only: %i[ show update destroy ]
+  before_action :set_pitch, only: %i[ update destroy ]
 
   # GET /pitches
   # GET /pitches.json
   def index
-    @pitches = Pitch.all
+    @pitches = Pitch.page(params[:page]).order(id: :desc)
+    rv = {
+      items: @pitches.map {|pitch| pitch.as_json},
+      total_pages: @pitches.total_pages,
+    }
+    api_success rv
   end
 
   # GET /pitches/1
   # GET /pitches/1.json
   def show
+    if params[:id] == 'latest'
+      @pitch = Pitch.last
+    else
+      @pitch = Pitch.find(params[:id])
+    end
+    if params[:view] == 'invest'
+      api_success @pitch.as_json(details: true)
+    else
+      api_success @pitch.as_json
+    end
   end
 
   # POST /pitches
   # POST /pitches.json
   def create
-    @pitch = Pitch.new(pitch_params)
-
+    @pitch = Pitch.new
+    @pitch.attachment.attach(params[:file])
+    @pitch.filename = params[:file].original_filename
     if @pitch.save
-      render :show, status: :created, location: @pitch
+      PitchWorker.perform_async 'generate_image', @pitch.id
+      api_success @pitch.as_json
     else
-      render json: @pitch.errors, status: :unprocessable_entity
+      api_fail @pitch.errors, :unprocessable_entity
     end
   end
 
@@ -28,9 +45,9 @@ class PitchesController < ApplicationController
   # PATCH/PUT /pitches/1.json
   def update
     if @pitch.update(pitch_params)
-      render :show, status: :ok, location: @pitch
+      api_success
     else
-      render json: @pitch.errors, status: :unprocessable_entity
+      api_fail @pitch.errors, :unprocessable_entity
     end
   end
 
@@ -38,6 +55,7 @@ class PitchesController < ApplicationController
   # DELETE /pitches/1.json
   def destroy
     @pitch.destroy
+    api_success
   end
 
   private
@@ -48,6 +66,6 @@ class PitchesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def pitch_params
-      params.fetch(:pitch, {})
+      params.fetch(:pitch, {}).permit(:attachment)
     end
 end

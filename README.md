@@ -1,24 +1,25 @@
-# README
+# PDF & POWERPOINT to Image Converter
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Live demo: http://54.87.32.174:3000/
 
-Things you may want to cover:
+This project takes upload and convert them into images.
 
-* Ruby version
+For PDF, backend use RMagick for conversion.
+For powerpoint, it uses https://www.aspose.cloud/ for conversion.
 
-* System dependencies
+Since Aspose supports bunch of file types like Word, Excel, Diagram, CAD and video, this project can easily accommodate these use as well. For demonstration purpose, I'm only allowing powerpoint for now.
 
-* Configuration
+# Features
 
-* Database creation
+- Responsive webpage that optimized for both desktop and mobile web
+- Infinite scroll grid for displaying uploaded pitches with thumbnail
+- Progress indicator for upload 
+- Background file processing (Sidekiq)
+- Google drive style file management
+- Select/Deselect, upload, delete, download, view and double click in the gallery view
+- Carousel image slider in doc detail view
+- In-sync thumbnails in doc detail view that is scrollable and selectable
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+# Tech stack
+Frontend: React with Next.js.  https://github.com/tianqiwuben/presentation_web
+Backend: Ruby on Rails  https://github.com/tianqiwuben/presentation_api

@@ -57,14 +57,14 @@ class Pitch < ApplicationRecord
         if pitch.attachment.content_type == "application/pdf"
             im = Magick::Image.read(pitch.file_path)
             im.each_with_index do |img, idx|
-                img_path = "#{pitch.file_path}_#{idx}.jpg"
-                img.write(img_path, '-alpha flatten -background white')
-                pitch.images.attach(io: File.open(img_path), filename: "preview_#{idx}.jpg")
+                img_path = "#{pitch.file_path}_#{idx}.png"
+                img.write(img_path)
+                pitch.images.attach(io: File.open(img_path), filename: "preview_#{idx}.png")
                 File.delete img_path
-                img_path = "#{pitch.file_path}_t_#{idx}.jpg"
+                img_path = "#{pitch.file_path}_t_#{idx}.png"
                 thumb_img = img.resize_to_fit(320, 240)
-                thumb_img.write(img_path, '-alpha flatten -background white')
-                pitch.thumbs.attach(io: File.open(img_path), filename: "thumb_#{idx}.jpg")
+                thumb_img.write img_path
+                pitch.thumbs.attach(io: File.open(img_path), filename: "thumb_#{idx}.png")
                 File.delete img_path
             end
         else
